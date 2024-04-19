@@ -1,7 +1,7 @@
 const User = require("../models/user.js");
 const {upload} = require("../utils/cloudinary.js");
 const fs = require("fs");
-//const crypto = require("crypto");
+const crypto = require("crypto");
 exports.register = async (req,res) =>{
     try{
         const {name,email,password} = req.body;
@@ -14,7 +14,8 @@ exports.register = async (req,res) =>{
                 message : "user already exist",
             })
         }
-        const {public_id , url } = upload(req.file.path);
+        
+        const {public_id , url } =await upload(req.file.path);
         fs.unlinkSync(req.file.path);
         user = await User.create({name,email,password , avatar : {public_id, url}}) ;
         const token =  user.generatetoken();
@@ -97,6 +98,26 @@ exports.logout = async (req,res) =>{
         res.status(500).json({
             success : false,
             message : err.message
+        })
+    }
+}
+
+exports.myprofile = async (req,res) =>{
+    try {
+        const user = await User.findById(req.user._id)
+        .populate("myServices")
+        .populate("myOrders")
+        .populate("myJobs")
+        .populate("myJobApplications");
+
+        res.status(200).json({
+            success : true,
+            user,
+        })
+    } catch (error) {
+        res.status(500).json({
+            success : false,
+            message : error.message,
         })
     }
 }

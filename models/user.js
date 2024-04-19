@@ -19,6 +19,8 @@ const userSchema = new Schema({
     },
   myServices: [{ type: Schema.Types.ObjectId, ref: 'Service' }],
   myOrders: [{ type: Schema.Types.ObjectId, ref: 'Service' }],
+  myJobs : [{type : Schema.Types.ObjectId, ref : 'Jobs'}],
+  myJobApplications : [{type : Schema.Types.ObjectId, ref : 'Jobs'}],
   resetPasswordToken : String,
     resetPasswordExpire : Date,
 });

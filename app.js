@@ -19,6 +19,10 @@ app.use(cors({
 }))
 
 const user = require("./routes/user");
+const service = require("./routes/service");
+const jobs = require("./routes/jobs");
 
+app.use("/api/v1",service);
 app.use("/api/v1",user);
+app.use("/api/v1",jobs);
 module.exports = app;

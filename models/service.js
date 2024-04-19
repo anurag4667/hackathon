@@ -14,6 +14,9 @@ const serviceSchema = new Schema({
     userid: { type: Schema.Types.ObjectId, ref: 'User' }, 
     review: { type: String },
     stars: { type: Number , required : true}
+  }],
+  applicants: [{
+    userid: { type: Schema.Types.ObjectId, ref: 'User' }
   }]
 });
 
