@@ -2,6 +2,7 @@ const User = require("../models/user.js");
 const {upload} = require("../utils/cloudinary.js");
 const fs = require("fs");
 //const crypto = require("crypto");
+//hello
 exports.register = async (req,res) =>{
     try{
         const {name,email,password} = req.body;
