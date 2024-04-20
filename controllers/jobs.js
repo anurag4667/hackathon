@@ -64,3 +64,60 @@ exports.addJobs = async (req,res) =>{
         });
     }
 }
+
+exports.applyjob = async (req, res) => {
+    try {
+        const jobid = req.params.id;
+
+        // Find the job by its ID
+        const findjob = await Jobs.findById(jobid);
+        console.log(findjob);
+
+        // Check if the job exists
+        if (!findjob) {
+            return res.status(404).json({
+                success: false,
+                message: "This job does not exist"
+            });
+        }
+
+        // Check if the user is the owner of the job
+        if (findjob.userid.equals(req.user._id)) {
+            return res.status(400).json({
+                success: false,
+                message: "You cannot apply for your own job"
+            });
+        }
+
+        // Find the user by their ID
+        const user = await User.findById(req.user._id);
+
+        // Check if the user has already applied for this job
+        const isAlreadyApplied = user.myJobApplications.some(application => application.equals(findjob._id));
+
+        if (isAlreadyApplied) {
+            return res.status(400).json({
+                success: false,
+                message: "You have already applied for this job"
+            });
+        }
+
+        // Add the user to the job's applicants and add the job to the user's applications
+        findjob.applicants.push(req.user._id);
+        user.myJobApplications.push(findjob._id);
+
+        // Save changes to the database
+        await user.save();
+        await findjob.save();
+
+        return res.status(200).json({
+            success: true,
+            message: "Job applied successfully"
+        });
+    } catch (error) {
+        return res.status(500).json({
+            success: false,
+            message: error.message
+        });
+    }
+}
